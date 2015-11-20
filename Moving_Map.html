@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEPhdIlfLymL9lCff2TclmjQyuzN3oOBM">
+    </script>
+    <script type="text/javascript">
+	
+	var rot = 282;
+	
+	var map;
+	var toggle = 0;
+	
+	var speed = 50;
+	var east = -1;
+	var south = 0;
+	
+	function conbutton(conDiv, map, title, txt, func){
+		conDiv.style.padding = '5px';
+		var conUI = document.createElement('div');
+		conUI.style.backgroundColor = 'yellow';
+		conUI.style.border = '1px solid';
+		conUI.style.cursor = 'pointer';
+		conUI.style.textAlign = 'center';
+		conUI.title = title;
+		conDiv.appendChild(conUI);
+		
+		var conText = document.createElement('div');
+		conText.style.fontFamily = 'Cursive';
+		conText.style.fontSize = '12px';
+		conText.style.paddingLeft = '5px';
+		conText.style.paddingRight = '5px';
+		conText.innerHTML = '<i>' + txt + '</i>';
+		conUI.appendChild(conText);
+		
+		google.maps.event.addDomListener(conUI, 'click', func);
+	}
+	
+	
+	
+	
+			function Geolocate() 
+			{
+				if (typeof(navigator.geolocation) != 'undefined')
+				{
+					navigator.geolocation.getCurrentPosition(initialize);
+				}
+				else
+				{
+					alert('Your browser does not support Geolocation!');
+				}
+				
+				
+			}
+	
+      function initialize(p) {
+	  
+	   var latt = parseInt(p.coords.latitude);
+	   var	lngg = parseInt(p.coords.longitude);
+	  var ah = "HYBRID";
+	 
+	  
+	  var mapOptions = {
+          center: { lat: latt, lng: lngg},
+          zoom: 7,
+		  mapTypeControl:true,
+		  mapTypeId: google.maps.MapTypeId.ROADMAP,
+    mapTypeControlOptions: {
+      style:google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+      position:google.maps.ControlPosition.TOP_RIGHT
+    }
+        };
+        var map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+        
+		
+		setInterval(function() {
+    map.panBy(east, south);
+	
+	}, speed);
+	
+	var mapupDiv = document.createElement('div');
+	var b0 = new conbutton(mapupDiv, map, "North", "NORTH", 
+	function(){ 
+	south = -2;
+	
+	});
+	map.controls[google.maps.ControlPosition.RIGHT].push(mapupDiv);
+	
+	
+	var b1 = new conbutton(mapupDiv, map, "South", "SOUTH", 
+	function(){ 
+	south = 2;
+	
+	});
+	map.controls[google.maps.ControlPosition.RIGHT].push(mapupDiv);
+	
+	var b2 = new conbutton(mapupDiv, map, "Go East", "EAST", 
+	function(){ 
+	east = 2;
+	
+	});
+	map.controls[google.maps.ControlPosition.RIGHT].push(mapupDiv);
+	
+	var b3 = new conbutton(mapupDiv, map, "Go West", "WEST", 
+	function(){ 
+	east = -1;
+	
+	});
+	map.controls[google.maps.ControlPosition.RIGHT].push(mapupDiv);
+	
+	var b4 = new conbutton(mapupDiv, map, "Stop Pan", "STOP", 
+	function(){east = 0; south = 0; });
+	map.controls[google.maps.ControlPosition.RIGHT].push(mapupDiv);
+	
+	
+	
+	
+	
+	function centroid(cenDiv, map){
+		cenDiv.style.padding = '5px';
+		var cenUI = document.createElement('div');
+		cenUI.style.backgroundColor = 'transparent';
+		cenUI.style.border = '7px solid red';
+		cenUI.style.height = '100px';
+		cenUI.style.width = '100px';
+		cenUI.style.borderRadius = '100%';
+		cenUI.style.cursor = 'crosshair';
+		cenDiv.appendChild(cenUI);
+		
+		
+	}
+	
+	
+	var centDiv = document.createElement('div');
+	var cent = new centroid(centDiv, map);
+	map.controls[google.maps.ControlPosition.CENTER].push(centDiv);
+	
+	
+      }
+	 
+      google.maps.event.addDomListener(window, 'load', Geolocate);
+    </script>
+  </head>
+  <body>
+<div id="map-canvas"></div>
+
+  </body>
+</html>
